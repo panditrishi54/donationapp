@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "461422518001",
+    "project_id": "food-donation-ceafc",
+    "storage_bucket": "food-donation-ceafc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:461422518001:android:8585d754914a7bf12a1350",
+        "android_client_info": {
+          "package_name": "com.example.donationapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqW4DIx4b9H5r86VVW1Gy2-Hhl1OXWf8I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
