@@ -1,6 +1,10 @@
-import 'package:donationapp/Screens/Auth/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'donor_dashboard.dart'; // DonorDashboard expects a donorId parameter
+import 'charity_page.dart';      // CharityPage expects charityId and charityEmail parameters
+import 'register_page.dart';
+import 'selection_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -8,10 +12,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String userType = '';
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   void handleLogin() async {
     String email = emailController.text.trim();
@@ -27,19 +31,36 @@ class _LoginPageState extends State<LoginPage> {
     try {
       UserCredential userCredential =
       await _auth.signInWithEmailAndPassword(email: email, password: password);
+      User? user = userCredential.user;
 
-      if (userType.isNotEmpty) {
-        final user = userCredential.user;
-        if (user != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Logged in as $userType')),
+      if (user != null) {
+        DocumentSnapshot donorData =
+        await _firestore.collection('donors').doc(user.uid).get();
+        DocumentSnapshot charityData =
+        await _firestore.collection('charities').doc(user.uid).get();
+
+        if (donorData.exists) {
+          // Navigate to DonorDashboard with donorId parameter
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => DonorDashboard(donorId: user.uid)),
           );
-          // Navigate to the donor or charity specific pages here
+        } else if (charityData.exists) {
+          // Navigate to CharityPage with charityId and charityEmail parameters
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CharityPage(
+                charityId: user.uid,
+                charityEmail: charityData.get('email'),
+              ),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('User type not found. Please register again.')),
+          );
         }
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Please select Donor or Charity')),
-        );
       }
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -51,77 +72,41 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Login Page'),
-      ),
+      appBar: AppBar(title: Text('Login Page')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Are you a:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            TextField(
+              controller: emailController,
+              decoration: InputDecoration(labelText: 'Email'),
             ),
-            SizedBox(height: 8),
-            Row(
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      userType = 'donor';
-                    });
-                  },
-                  child: Text('Donor'),
-                ),
-                SizedBox(width: 16),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      userType = 'charity';
-                    });
-                  },
-                  child: Text('Charity'),
-                ),
-              ],
+            SizedBox(height: 10),
+            TextField(
+              controller: passwordController,
+              obscureText: true,
+              decoration: InputDecoration(labelText: 'Password'),
             ),
             SizedBox(height: 20),
-            if (userType.isNotEmpty) ...[
-              TextField(
-                controller: emailController,
-                decoration: InputDecoration(labelText: 'Email'),
-              ),
-              TextField(
-                controller: passwordController,
-                obscureText: true,
-                decoration: InputDecoration(labelText: 'Password'),
-              ),
-              SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: handleLogin,
-                child: Text('Login'),
-              ),
-              TextButton(
-                onPressed: () {
-                  if (userType.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Please select Donor or Charity')),
-                    );
-                    return;
-                  }
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RegisterPage(userType: userType),
-                    ),
-                  );
-                },
-                child: Text('Register'),
-              ),
-            ],
+            ElevatedButton(
+              onPressed: handleLogin,
+              child: Text('Login'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SelectionPage()),
+                );
+              },
+              child: Text('Register'),
+            ),
           ],
         ),
       ),
     );
   }
 }
+
+

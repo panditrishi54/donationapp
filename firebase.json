@@ -1,1 +1,30 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"food-donation-ceafc","appId":"1:461422518001:android:8585d754914a7bf12a1350","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"food-donation-ceafc","configurations":{"android":"1:461422518001:android:8585d754914a7bf12a1350","web":"1:461422518001:web:56d1e3e1646af5122a1350"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "food-donation-ceafc",
+          "appId": "1:461422518001:android:8585d754914a7bf12a1350",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "food-donation-ceafc",
+          "configurations": {
+            "android": "1:461422518001:android:8585d754914a7bf12a1350",
+            "web": "1:461422518001:web:56d1e3e1646af5122a1350"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
