@@ -1,17 +1,6 @@
 Food Donor App
 A mobile application built with Flutter and Firebase to connect food donors with charities, helping to reduce food waste and ensure surplus food reaches those in need.
 Project link https://food-donation-ceafc.web.app/
-Table of Contents
-
-About
-Features
-Tech Stack
-Screenshots
-Installation
-Usage
-Contributing
-License
-Contact
 
 About
 The Food Donor App facilitates the donation of surplus food by connecting donors (individuals, restaurants, or businesses) with charities. It aims to reduce food waste through a user-friendly platform that supports secure authentication, real-time donation tracking, and efficient data management.
